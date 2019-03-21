@@ -1,0 +1,7 @@
+{
+	"production": {
+		"config_id": "production",
+		"server_port": 8080,
+		"identifier": "aaabbb"
+	}
+}
