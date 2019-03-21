@@ -11,20 +11,15 @@ api.start( () => {
 
 	console.log(api.getProgram());
 
+});
 
 
+oak.on('ready', () => {
 
-
-	oak.on('ready', () => {
-
-
-		oak.load({
-			url: 'http://www.mywebapp.com'
-		})
-
-
+	oak.load({
+		url: 'http://www.mywebapp.com'
 	})
 
 
+})
 
-});

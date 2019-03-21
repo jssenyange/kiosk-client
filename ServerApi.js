@@ -12,9 +12,15 @@ module.exports = class ServerApi{
 
 	start(callback){
 
-		this.init(callback);
+		try{
+			this.init(callback);
+			console.log("working");
+		} catch(e){
+			console.log("Ti chto tupoy?");
+		}
+
 		
-		console.log("working");
+		
 
 	}
 
@@ -24,6 +30,12 @@ module.exports = class ServerApi{
 		this.server_port = global.gConfig.server_port;
 
 		this.ws = new WebSocket('ws://localhost:'+this.server_port, {});
+
+		this.ws.on('error', (err) => {
+			console.error("Error");
+			console.log(err);
+		});
+
 
 
 		let _this = this;
