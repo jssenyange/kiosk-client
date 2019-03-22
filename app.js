@@ -2,6 +2,7 @@ const config = require('./config/config.js');
 
 
 const ServerApi = require("./ServerApi");
+const oak = require('oak');
 
 let api = new ServerApi();
 
@@ -11,14 +12,17 @@ api.start( () => {
 
 
 });
-// const oak = require('oak');
-
-// oak.on('ready', () => {
-
-// 	oak.load({
-// 		url: 'http://www.mywebapp.com'
-// 	})
 
 
-// })
+oak.on('ready', () => {
+
+
+	oak.load({
+		url: 'file://' + require('path').join(__dirname, 'templates/index.html'),
+		fullscreen: false,
+		frame: true,
+	})
+
+
+})
 
