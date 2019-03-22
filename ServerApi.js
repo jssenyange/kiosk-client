@@ -19,9 +19,6 @@ module.exports = class ServerApi{
 			console.log("Ti chto tupoy?");
 		}
 
-		
-		
-
 	}
 
 
@@ -61,11 +58,12 @@ module.exports = class ServerApi{
 
 				let respond = JSON.parse(res);
 
-		
+
 				if(respond.message == "program_data" && respond.data){
 
 					_this.program = respond.data;
 
+					console.log(_this.program);
 					if(!_this.auth){
 						_this.auth = true;
 						onAuth();
