@@ -6,5 +6,10 @@ module.exports = {
   output: {
     filename: 'main.js',
     path: path.resolve(__dirname, 'templates')
+  },
+  resolve: {
+    alias: {
+      'vue$': 'vue/dist/vue.esm.js'
+    }
   }
 };

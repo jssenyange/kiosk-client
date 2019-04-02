@@ -2,6 +2,7 @@
 	"production": {
 		"config_id": "production",
 		"server_port": 8080,
+		"host": "http://kiosk.loc",
 		"identifier": "aaabbb"
 	}
 }

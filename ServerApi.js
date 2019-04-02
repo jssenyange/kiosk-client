@@ -10,19 +10,32 @@ module.exports = class ServerApi{
 	}
 
 
-	start(callback){
+
+
+	listen(win){
+		this.win = win;
+
+		this.ws.send(JSON.stringify({
+			"action": "program"
+		}))
+
+	}
+
+	start(eve){
+		this.eve = eve;
 
 		try{
-			this.init(callback);
+			return this.init();
 			console.log("working");
 		} catch(e){
+			console.log(e);
 			console.log("Ti chto tupoy?");
 		}
 
 	}
 
 
-	init(onAuth){
+	init(){
 		this.identifier = global.gConfig.identifier;
 		this.server_port = global.gConfig.server_port;
 
@@ -33,9 +46,7 @@ module.exports = class ServerApi{
 			console.log(err);
 		});
 
-
-
-		let _this = this;
+		var _this = this;
 
 		_this.ws.on('open', function open(){
 			let data = {
@@ -43,31 +54,25 @@ module.exports = class ServerApi{
 				"identifier": _this.identifier
 			};
 
-			_this.ws.send(JSON.stringify(data), () => {
-				_this.initListeners(onAuth);
-			});
+			_this.ws.send(JSON.stringify(data));
+
 		});
-	}
 
-	initListeners(onAuth){
-		const _this = this;
 
-		//Just to see results
 		_this.ws.on('message', function incoming(res){
+
 			if(res){
-
 				let respond = JSON.parse(res);
+				if(respond.message == "authed"){
+					_this.auth = true;
 
-
-				if(respond.message == "program_data" && respond.data){
-
+					_this.eve.emit("authed");
+				}else if(respond.message == "program_data" && respond.data){
+					
 					_this.program = respond.data;
 
 					console.log(_this.program);
-					if(!_this.auth){
-						_this.auth = true;
-						onAuth();
-					}
+					_this.win.send("program_loaded", _this.program);
 				}
 			}
 		});
@@ -78,8 +83,9 @@ module.exports = class ServerApi{
 
 
 
+
 	getProgram(){
-		return this.program ? this.program : "hello_wordl";
+		return this.program ? this.program : false;
 	}
 
 }

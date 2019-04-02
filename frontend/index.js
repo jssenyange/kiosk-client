@@ -1,78 +1,119 @@
-import * as cocoSsd from '@tensorflow-models/coco-ssd';
+import Vue from 'vue';
+import { Hooper, Slide, Navigation as HooperNavigation } from 'hooper';
+import VueResource from 'vue-resource';
+
+import config from "../config/config.json";
+import JQuery from 'jquery'
+let $ = JQuery
+
+global.conf = config.production;
 
 
 
+Vue.use(VueResource);
 
-function initTensor(){
-		navigator.mediaDevices.getUserMedia({video: true}).then(function(stream) {
-
-		var video = document.getElementById('camera');
-		video.srcObject = stream;
+Vue.component('hooper', Hooper);
+Vue.component('slide', Slide);
+Vue.component('hooper-navigation', HooperNavigation)
 
 
-		var renderPredictions = predictions => {
-			  const canvas = document.getElementById("canvas");
-			  
-			  const ctx = canvas.getContext("2d");
-			  canvas.width  = 300;
-			  canvas.height = 300;
-			  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-			  // Fonts
-			  const font = "16px sans-serif";
-			  ctx.font = font;
-			  ctx.textBaseline = "top";
-			  ctx.drawImage(video,0, 0,300,300);
-			predictions.forEach(prediction => {
-			  const x = prediction.bbox[0];
-			  const y = prediction.bbox[1];
-			  const width = prediction.bbox[2];
-			  const height = prediction.bbox[3];
-			  // Bounding box
-			  ctx.strokeStyle = "#00FFFF";
-			  ctx.lineWidth = 2;
-			  ctx.strokeRect(x, y, width, height);
-			  // Label background
-			  ctx.fillStyle = "#00FFFF";
-			  const textWidth = ctx.measureText(prediction.class).width;
-			  const textHeight = parseInt(font, 10); // base 10
-			  ctx.fillRect(x, y, textWidth + 4, textHeight + 4);
-			});
-			predictions.forEach(prediction => {
-			  
-			  const x = prediction.bbox[0];
-			  const y = prediction.bbox[1];
-			  ctx.fillStyle = "#000000";
-			  ctx.fillText(prediction.class, x, y);});
-		};
-
-		var detectFrame = (video, model) => {
-			model.detect(video).then(predictions => {
-				console.log(predictions);
-			renderPredictions(predictions);
-			requestAnimationFrame(() => {
-				detectFrame(video, model);});
-			}).catch( (e) => {
-				console.log(e);
-			});
+const app = new Vue({
+	el: '#app',
+	data: {
+		slides: ["no-image.png"],
+		hooperSettings: {
+			centerMode: true,
+			infiniteScroll: true,
+		},
+		slideTimer: null,
+	},
+	computed: {
+		host(){
+			return global.conf.host;
 		}
+	},
+	components: {
+		Hooper,
+		Slide,
+		HooperNavigation
+	},
+	methods: {
+		slideChanged(e){
+			let current = e.currentSlide;
+			let prev = e.slideFrom;
 
-		async function predictWithCocoModel()
-		{
-		
-			const model = await cocoSsd.load('lite_mobilenet_v2');
-			console.log(model);
-			detectFrame(video,model);
 
+
+
+			let curSlide = $(".slides #slide"+current);
+			let prevSlide = $(".slides #slide"+prev);
+			let duration = curSlide.attr("duration");
+
+
+			if(prevSlide.attr("type") == "video/mp4"){
+				prevSlide.get(1).pause();
+			}
+
+
+			if(!isNaN(duration))
+				duration = Math.round(duration);
+
+
+
+
+			if(curSlide.attr("type") == "video/mp4"){
+				curSlide.get(1).currentTime = 0;
+				curSlide.get(1).play();
+
+				duration = curSlide.get(1).duration;
+				duration = Math.round(duration);
+				duration*= 1000;
+			}
+
+
+			this.clearTimer();
+			this.slideTimer = setTimeout(() => {
+				console.log("done");
+				this.nextSlide();
+			}, duration);
+			console.log(duration);
+
+
+
+		},
+		updateSlides(items){
+			this.slides = items;
+			this.$refs.hooper.restart();
+			this.nextSlide();
+		},
+		clearTimer(){
+			clearTimeout(this.slideTimer);
+		},
+
+		nextSlide(){
+			console.log("nextslide");
+			this.$refs.hooper.slideNext();
+		},
+
+		prevSlide(){
+			this.$refs.hooper.slidePrev();
 		}
+	},
+	mounted() {
+		let that = this;
+		global.vue = this;
 
 
-		predictWithCocoModel();
+		this.slideTimer = setTimeout(() => {
+			console.log("done");
+			this.nextSlide();
+		}, 2000);
+	}
+})
 
-	}).catch(function(e) {
-		alert('could not connect stream');
-	});
 
-}
+
+
 
 
 
