@@ -71,12 +71,12 @@ const app = new Vue({
 			}
 
 
-			this.clearTimer();
-			this.slideTimer = setTimeout(() => {
-				console.log("done");
-				this.nextSlide();
-			}, duration);
-			console.log(duration);
+			// this.clearTimer();
+			// this.slideTimer = setTimeout(() => {
+			// 	console.log("done");
+			// 	this.nextSlide();
+			// }, duration);
+			// console.log(duration);
 
 
 
@@ -104,10 +104,10 @@ const app = new Vue({
 		global.vue = this;
 
 
-		this.slideTimer = setTimeout(() => {
-			console.log("done");
-			this.nextSlide();
-		}, 2000);
+		// this.slideTimer = setTimeout(() => {
+		// 	console.log("done");
+		// 	this.nextSlide();
+		// }, 2000);
 	}
 })
 

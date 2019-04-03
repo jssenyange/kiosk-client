@@ -47,6 +47,12 @@
 			width: 100%;
 		}
 
+		.hooper-navigation .icon{
+			fill: white !important;
+			width: 40px !important;
+			height: 40px !important;
+		}
+
 
 
 	</style>
@@ -59,6 +65,8 @@
 				<img :src="host+slide.url" :alt="slide.name" v-if="slide.type == 'image/png'" :id="'slide'+idx" :type="slide.type" :duration="slide.duration">
 				<video :src="host+slide.url" v-else-if="slide.type == 'video/mp4'" :id="'slide'+idx" class="video" :type="slide.type"></video>
 			</slide>
+			<hooper-navigation slot="hooper-addons"></hooper-navigation>
+
 		</hooper>
 	</div>
 	
