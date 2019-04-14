@@ -1,6 +1,7 @@
 const config = require('./config/config.js');
 
-const { app, BrowserWindow } = require('electron')
+
+const { app, BrowserWindow, ipcMain } = require('electron')
 
 app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 
@@ -34,8 +35,6 @@ app.on('ready', () => {
 			win = null
 		})
 
-		// Загрузка удалённого URL'а
-		win.loadURL('https://github.com')
 
 		// Или загрузка локального HTML файла
 		win.loadURL('file://' + require('path').join(__dirname, 'templates/index.html'));
@@ -43,8 +42,17 @@ app.on('ready', () => {
 
 
 		win.webContents.on('did-finish-load', () => {
+			
 			api.listen(win.webContents);
+
+			ipcMain.on('frame', (event, frame) => {
+				api.sendFrame(frame);
+			})
+
 		})
+
+
+
 	})
 })
 

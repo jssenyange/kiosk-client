@@ -59,6 +59,9 @@
 	<link rel="stylesheet" href="../node_modules/hooper/dist/hooper.css">
 </head>
 <body>
+
+	<video autoplay style="visibility: hidden; position: absolute;"></video>
+
 	<div id="app">
 		<hooper ref="hooper" :settings="hooperSettings" @slide="slideChanged" class="slides">
 			<slide v-for="(slide, idx) in slides" :key="idx">
@@ -72,7 +75,51 @@
 	
 	<script src="gest.js"></script>
 	<script src="main.js"></script>
+
 	<script>
+
+		const { ipcRenderer } = require('electron');
+
+		ipcRenderer.on('program_loaded', (event, data) => {
+
+			vue.updateSlides(data.items);
+		});
+
+		const video = document.querySelector('video');
+
+		const getFrame = () => {
+			const canvas = document.createElement('canvas');
+			canvas.width = video.videoWidth;
+			canvas.height = video.videoHeight;
+			canvas.getContext('2d').drawImage(video, 0, 0);
+			const data = canvas.toDataURL('image/png');
+			return data;
+		}
+
+
+		const FPS = 5;
+
+		navigator.mediaDevices.getUserMedia({
+			video: {width: 426, height: 240}
+		}).then((stream) => {
+			video.srcObject = stream
+
+
+
+			setInterval(() => {
+
+				let frame = getFrame();
+
+
+				ipcRenderer.send("frame", frame);
+			}, 1000 / FPS);
+		});
+
+
+
+
+
+
 
 		// gest.start();
 		// gest.options.debug(true);
@@ -86,12 +133,9 @@
 		// 	}
 		// });
 
-		const { ipcRenderer } = require('electron');
 
-		ipcRenderer.on('program_loaded', (event, data) => {
 
-			vue.updateSlides(data.items);
-		});
+
 	</script>
 </body>
 </html>

@@ -19,6 +19,26 @@ module.exports = class ServerApi{
 			"action": "program"
 		}))
 
+
+	}
+
+
+	sendFrame(frame){
+
+		let that = this;
+
+		let data = {
+			"action": "frame",
+			"frame": frame,
+			"identifier": that.identifier
+		};
+
+		try{
+			this.ws.send(JSON.stringify(data));
+		} catch(e){
+			// console.log(e);
+		}
+
 	}
 
 	start(eve){
@@ -78,10 +98,6 @@ module.exports = class ServerApi{
 		});
 
 	}
-
-
-
-
 
 
 	getProgram(){

@@ -17,10 +17,6 @@ Vue.component('slide', Slide);
 Vue.component('hooper-navigation', HooperNavigation)
 
 
-const cv = require('opencv4nodejs');
-
-const devicePort = 0;
-const wCap = new cv.VideoCapture(devicePort);
 
 
 console.log(wCap);
