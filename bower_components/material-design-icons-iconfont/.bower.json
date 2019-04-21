@@ -1,0 +1,33 @@
+{
+  "name": "material-design-icons-iconfont",
+  "version": "4.0.5",
+  "author": "Material Design Authors, Jossef Harush",
+  "description": "Material Design icons DX",
+  "keywords": [
+    "icons",
+    "material",
+    "material-design",
+    "material-design-icons",
+    "material-design-icons-build",
+    "material-design-icons-release",
+    "material-design-icons-dist",
+    "material-design-icons-iconfont",
+    "mdidx",
+    "google"
+  ],
+  "main": [
+    "src/material-design-icons.scss"
+  ],
+  "license": "Apache-2.0",
+  "homepage": "https://jossef.github.io/material-design-icons-iconfont/",
+  "_release": "4.0.5",
+  "_resolution": {
+    "type": "version",
+    "tag": "4.0.5",
+    "commit": "d95481c3eac83793035720ea8d4741728a306f16"
+  },
+  "_source": "https://github.com/Jossef/material-design-icons-iconfont.git",
+  "_target": "^4.0.5",
+  "_originalSource": "material-design-icons-iconfont",
+  "_direct": true
+}

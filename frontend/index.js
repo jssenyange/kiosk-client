@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import { Hooper, Slide, Navigation as HooperNavigation } from 'hooper';
-import VueResource from 'vue-resource';
+import Vuetify from 'vuetify'
+import 'vuetify/dist/vuetify.min.css'
+
 
 import config from "../config/config.json";
 import JQuery from 'jquery'
@@ -10,21 +12,21 @@ global.conf = config.production;
 
 
 
-Vue.use(VueResource);
-
+Vue.use(Vuetify);
 Vue.component('hooper', Hooper);
 Vue.component('slide', Slide);
-Vue.component('hooper-navigation', HooperNavigation)
+Vue.component('hooper-navigation', HooperNavigation);
 
 
-
-
-console.log(wCap);
 
 const app = new Vue({
 	el: '#app',
 	data: {
 		slides: ["no-image.png"],
+		footer: false,
+		slot: "slider",
+		qr_link: null,
+		type: "slider",
 		hooperSettings: {
 			centerMode: true,
 			infiniteScroll: true,
@@ -42,6 +44,19 @@ const app = new Vue({
 		HooperNavigation
 	},
 	methods: {
+		setType(data){
+			this.type = data;
+		},
+		setQrLink(data){
+			this.qr_link = data;
+		},
+		setFooter(data){
+			this.footer =data;
+		},
+
+		setSlot(data){
+			this.slot = data;
+		},
 		slideChanged(e){
 			let current = e.currentSlide;
 			let prev = e.slideFrom;
@@ -94,8 +109,8 @@ const app = new Vue({
 			clearTimeout(this.slideTimer);
 		},
 
-		nextSlide(){
-			console.log("nextslide");
+		nextSlide(e){
+			
 			this.$refs.hooper.slideNext();
 		},
 
@@ -114,10 +129,6 @@ const app = new Vue({
 		// }, 2000);
 	}
 })
-
-
-
-
 
 
 

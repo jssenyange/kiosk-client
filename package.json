@@ -7,23 +7,30 @@
 		"start": "electron .",
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"build": "webpack --config webpack.config.js",
-		"electron-rebuild": "electron-rebuild -w opencv4nodejs"
+		"electron-rebuild": "electron-rebuild"
 	},
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"desandro-matches-selector": "^2.0.2",
+		"ev-emitter": "^1.1.1",
 		"hooper": "^0.1.1",
 		"jquery": "^3.3.1",
+		"material-design-icons-iconfont": "^4.0.5",
 		"node-loader": "^0.6.0",
 		"opencv4nodejs": "^4.14.1",
 		"socket.io": "^2.2.0",
 		"vue": "^2.6.10",
+		"vue-material-design-icons": "^3.1.0",
 		"vue-resource": "^1.5.1",
+		"vuetify": "^1.5.12",
 		"ws": "^6.2.0"
 	},
 	"devDependencies": {
+		"css-loader": "^2.1.1",
 		"electron": "^4.1.3",
 		"electron-rebuild": "^1.8.4",
+		"style-loader": "^0.23.1",
 		"webpack": "^4.29.6",
 		"webpack-cli": "^3.3.0"
 	}

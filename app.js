@@ -37,7 +37,7 @@ app.on('ready', () => {
 
 
 		// Или загрузка локального HTML файла
-		win.loadURL('file://' + require('path').join(__dirname, 'templates/index.html'));
+		win.loadURL(api.template);
 
 
 
@@ -47,6 +47,10 @@ app.on('ready', () => {
 
 			ipcMain.on('frame', (event, frame) => {
 				api.sendFrame(frame);
+			})
+
+			ipcMain.on("interaction", (event, interaction) => {
+				api.sendInteraction(interaction);
 			})
 
 		})

@@ -3,87 +3,275 @@
 <head>
 	<meta charset="UTF-8">
 	<title>KIOSK CLIENT</title>
-	<style type="text/css">
-		body,html{
-			background: #fff;
-			font-family: Arial, Helvetica, sans-serif;
-			height: 100%;
-			width: 100%;
-			margin: 0;
-			padding: 0;
-		}
-		body {
-			color: #333;
-			font-size: 4vmax;
-			display: flex;
-			flex-direction: column;
-			overflow: hidden;
-		}
+	<link href="../bower_components/material-design-icons-iconfont/dist/material-design-icons.css" rel="stylesheet">
 
-		ul{
-			margin-bottom: 0;
-		}
+	<link rel="stylesheet" href="../node_modules/hooper/dist/hooper.css">
 
-		#app {
-			height: 100%;
-			overflow: hidden;
+	<style>
+	.application--wrap{
+		height: 100%;
+	}
+				body,html{
+					background: #fff;
+					font-family: Arial, Helvetica, sans-serif;
+					height: 100%;
+					width: 100%;
+					margin: 0;
+					padding: 0;
 
-/*			display: none;*/
-		}
-		#app .hooper {
-			height: 100%;
-		}
-		#app .hooper-track {
-			height: 100%;
-		}
-		#app .hooper-slide {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			height: 100%;
-		}
+				}
+				body {
+					color: #333;
+					overflow: hidden;
+				}
 
-		img, video{
-			width: 100%;
-		}
+				ul{
+					margin-bottom: 0;
+				}
 
-		.hooper-navigation .icon{
-			fill: white !important;
-			width: 40px !important;
-			height: 40px !important;
-		}
+				#app {
+					height: 100%;
+					overflow: hidden;
+		/*			display: none;*/
+				}
+				#app .hooper {
+					height: 100%;
+				}
+				#app .hooper-track {
+					height: 100%;
+				}
+				#app .hooper-slide {
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					height: 100%;
+				}
 
+				img, video{
+					width: 100%;
+					height: 100%;
+				}
+
+				.hooper-navigation .icon{
+					fill: white !important;
+					width: 40px !important;
+					height: 40px !important;
+				}
+				iframe{
+					height: 100% !important;
+				}
+			
+
+			footer .v-btn__content i{
+				display: block;
+
+			}
+			footer .v-btn__content{
+				display: block;
+			}
+			footer .v-btn{
+				height: 50px !important;
+				min-width: 110px !important;
+			}
+
+			#app > div > div{
+				height: 100%;
+			}
+
+			webview{
+						height: 100%;
+					}
+			
+			.qr-code{
+				width: 25%;
+				margin: 20px auto;
+			}
+
+			#open-in{
+				cursor: pointer;
+				color: blue;
+			}
+
+			#template-wrap{
+				height: 100%;
+				width: 100%;
+			}
+
+			#template-wrap iframe{
+				width: 100%;
+			}
 
 
 	</style>
-	<link rel="stylesheet" href="../node_modules/hooper/dist/hooper.css">
 </head>
 <body>
 
-	<video autoplay style="visibility: hidden; position: absolute;"></video>
+	<video autoplay style="visibility: hidden; position: absolute; top: 0;"></video>
 
 	<div id="app">
-		<hooper ref="hooper" :settings="hooperSettings" @slide="slideChanged" class="slides">
-			<slide v-for="(slide, idx) in slides" :key="idx">
-				<img :src="host+slide.url" :alt="slide.name" v-if="slide.type == 'image/png'" :id="'slide'+idx" :type="slide.type" :duration="slide.duration">
-				<video :src="host+slide.url" v-else-if="slide.type == 'video/mp4'" :id="'slide'+idx" class="video" :type="slide.type"></video>
-			</slide>
-			<hooper-navigation slot="hooper-addons"></hooper-navigation>
+		<v-app>
 
-		</hooper>
+			<div class="slider-wrap"  v-if="slot == 'slider'">
+				<hooper ref="hooper" :settings="hooperSettings" @slide="slideChanged" id="slider-wrap" class="slides" style="padding-bottom: 50px;" v-show="type == 'slider'">
+					<slide v-for="(slide, idx) in slides" :key="idx">
+						<img :src="host+slide.url" :alt="slide.name" v-if="slide.type == 'image/png'" :id="'slide'+idx" :data-id="slide.id" :type="slide.type" :duration="slide.duration">
+						<video :src="host+slide.url" v-else-if="slide.type == 'video/mp4'" :id="'slide'+idx" class="video" :data-id="slide.id" :type="slide.type"></video>
+					</slide>
+					<hooper-navigation slot="hooper-addons"></hooper-navigation>
+
+				</hooper>
+				<div id="template-wrap" v-show="type =='template'">
+					
+				</div>
+			</div>
+
+
+
+			<div id="news-wrap" v-show="slot == 'news'" style="padding-bottom: 100px;">
+				<webview src="https://inha.uz/en/news/" id="news-view" nodeintegration></webview>
+			</div>
+
+			<div id="timetable-wrap" v-show="slot == 'timetable'" style="padding-bottom: 100px;">
+				<webview src="https://iut.edupage.org/timetable/" id="timetable-view" nodeintegration disablewebsecurity></webview>
+			</div>
+			<div id="qr-code-wrap" v-show="slot == 'qr-code'" style="padding-bottom: 100px">
+				
+				<h2 style="text-align: center;">Download <span id="open-in" :href="qr_link">facade</span></h2>
+				<div class="qr-code">
+					<div id="qr"></div>
+				</div>
+				
+			</div>
+
+
+
+
+
+			<v-footer height="auto" :fixed="true" color="blue lighten-5" v-if="footer">
+				<v-layout justify-center row wrap grid-list-xl>
+					<v-btn color="grey darken-4" outline :dark="true" v-if="slot == 'news'" id="goBack">
+						<v-icon>arrow_back</v-icon>
+						<span>Back</span>
+					</v-btn>
+					<v-btn color="green darken-4" outline :dark="true" @click="slot = 'news'">
+						<v-icon>rss_feed</v-icon>
+						<span>News</span>
+					</v-btn>
+
+					<v-btn color="blue-grey darken-4" outline  :dark="true" @click="slot = 'slider'">
+
+						<v-icon>home</v-icon>
+						<span>Home</span>
+					</v-btn>
+
+					<v-btn color="yellow darken-4" outline  :dark="true" @click="slot ='timetable'">
+
+						<v-icon>schedule</v-icon>
+						<span>Timetable</span>
+					</v-btn>
+					<v-btn color="light-blue darken-4" outline  :dark="true" @click="slot ='qr-code'">
+
+						<v-icon>cloud_download</v-icon>
+						<span>Download</span>
+					</v-btn>
+
+					
+				</v-layout>
+			</v-footer>
+
+
+		</v-app>
 	</div>
 	
-	<script src="gest.js"></script>
+	<script>
+		if (typeof module === 'object') {window.module = module; module = undefined;}
+
+
+	</script>
+
+<!-- 	<script src="gest.js"></script> -->
 	<script src="main.js"></script>
+	<script src="jquery.min.js" type="text/javascript"></script>
+	<script src="qrcode.min.js" type="text/javascript"></script>
+	<script>if (window.module) module = window.module;</script>
+
 
 	<script>
 
-		const { ipcRenderer } = require('electron');
 
-		ipcRenderer.on('program_loaded', (event, data) => {
+		const { ipcRenderer, shell } = require('electron');
+		const Interactor = require("../components/Interactor");
+		let interaction = new Interactor();
 
-			vue.updateSlides(data.items);
+
+		var program_id = null;
+		var html_file = null;
+		var link = null;
+		var qr = null;
+
+
+		ipcRenderer.on('program_loaded', (event, respond) => {
+			$("#slider-wrap").css("display", "block");
+			vue.setType("slider");
+			vue.updateSlides(respond.data.items);
+			program_id = respond.data.id;
+
+			vue.setFooter(respond.footer);
+			$("#myFrame").detach();
+
+
+			link = "http://kiosk.loc/site/html?id="+program_id;
+			vue.setQrLink(link);
+			if(!qr)
+				qr = new QRCode(document.getElementById("qr"), link);
+			else{
+				qr.clear();
+				qr.makeCode(link);
+			}
+
+
 		});
+
+
+		ipcRenderer.on("template_loaded", (event, respond) => {
+
+			vue.setType("template");
+
+			vue.setFooter(respond.footer);
+			html_file = respond.data.htmlfile;
+
+			link = 'http://kiosk.loc/templates/'+html_file;
+			vue.setQrLink(link);
+			if(!qr)
+				qr = new QRCode(document.getElementById("qr"), link);
+			else{
+				qr.clear();
+				qr.makeCode(link);
+			}
+
+
+			$("#myFrame").detach();
+
+
+			$(document).ready( () => {
+				$('<iframe>', {
+				   src: 'http://kiosk.loc/templates/'+html_file,
+				   id:  'myFrame',
+				   frameborder: 0,
+				   scrolling: 'yes'
+				}).appendTo("#template-wrap");
+			})
+
+
+		});
+
+
+
+
+
+
+
+
 
 		const video = document.querySelector('video');
 
@@ -92,20 +280,27 @@
 			canvas.width = video.videoWidth;
 			canvas.height = video.videoHeight;
 			canvas.getContext('2d').drawImage(video, 0, 0);
-			const data = canvas.toDataURL('image/png');
-			return data;
+			const img = canvas.toDataURL('image/png');
+			return img;
 		}
 
 
 		const FPS = 5;
 
+		function sendAction(){
+			let myData = {
+				type: "program",
+				program_item_id: 1,
+				photo: getFrame(),
+			};
+
+			interaction.add(myData);
+		}
+
 		navigator.mediaDevices.getUserMedia({
 			video: {width: 426, height: 240}
 		}).then((stream) => {
 			video.srcObject = stream
-
-
-
 			setInterval(() => {
 
 				let frame = getFrame();
@@ -116,6 +311,42 @@
 		});
 
 
+
+		$(document).ready( () => {
+			
+			var webview = document.getElementById('news-view');
+			webview.addEventListener('dom-ready', function () {
+					
+				webview.insertCSS("header{display: none !important;}");
+				webview.insertCSS("footer{display: none !important;}");
+				webview.insertCSS("#mainMenu{display: none !important;}");
+				webview.insertCSS(".content .container > div {display: none !important;}");
+				webview.insertCSS(".content .container > .col-md-8 {display: block !important;}");
+				webview.insertCSS(".breadcrumb{display: none !important;}");
+
+				$("#goBack").click( () => {
+					webview.goBack();
+				})
+			});
+
+			var timetable = document.getElementById('timetable-view');
+			timetable.executeJavaScript("", true);
+			timetable.addEventListener('dom-ready', function () {
+					
+				timetable.insertCSS("#skin_Div_1, #skin_Div_21, #skin_Div_22, #skin_Breadcrumb_2{display: none !important;}");
+				timetable.insertCSS("footer{display: none !important;}");
+				timetable.insertCSS(".edubarMainSkin .skgd.skgdContainer{max-width: 100% !important}");
+			});
+
+			$("#open-in").click( () => {
+
+				shell.openExternal($("#open-in").attr("href"));
+			})
+
+
+
+
+		})
 
 
 

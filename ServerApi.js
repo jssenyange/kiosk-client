@@ -7,6 +7,7 @@ module.exports = class ServerApi{
 
 		this.auth = false;
 		this.program = null;
+		this.template = 'file://' + require('path').join(__dirname, 'templates/index.html');
 	}
 
 
@@ -39,6 +40,21 @@ module.exports = class ServerApi{
 			// console.log(e);
 		}
 
+	}
+
+	sendInteraction(data){
+		let that = this;
+
+		data.action = "interaction";
+		data.identifier = this.identifier;
+
+
+		try{
+			console.log("helo");
+			this.ws.send(JSON.stringify(data));
+		} catch(e){
+			// console.log(e);
+		}
 	}
 
 	start(eve){
@@ -92,7 +108,13 @@ module.exports = class ServerApi{
 					_this.program = respond.data;
 
 					console.log(_this.program);
-					_this.win.send("program_loaded", _this.program);
+					_this.win.send("program_loaded", respond);
+
+				}else if(respond.message == "template" && respond.data){
+					_this.template = respond.data.htmlfile;
+
+					console.log(_this.template);
+					_this.win.send("template_loaded", respond);
 				}
 			}
 		});
