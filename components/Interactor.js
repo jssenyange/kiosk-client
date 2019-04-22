@@ -10,13 +10,7 @@ module.exports = class Interactor{
 
 
 	add(data){
-		if(this.timer == null){
-
-			this.startTimer();
-
-
-			ipcRenderer.send("interaction", data);
-		}
+		ipcRenderer.send("interaction", data);
 	}
 
 
